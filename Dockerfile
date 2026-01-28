@@ -30,12 +30,15 @@ ENV CLAWDBOT_PREFER_PNPM=1
 RUN pnpm ui:install
 RUN pnpm ui:build
 
+# Copy startup script
+COPY railway-start.sh /app/railway-start.sh
+RUN chmod +x /app/railway-start.sh
+
 ENV NODE_ENV=production
-ENV CLAWDBOT_GATEWAY_PORT=8080
 
 # Security hardening: Run as non-root user
 # The node:22-bookworm image includes a 'node' user (uid 1000)
 # This reduces the attack surface by preventing container escape via root privileges
 USER node
 
-CMD ["node", "dist/index.js", "gateway"]
+CMD ["/app/railway-start.sh"]
